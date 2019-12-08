@@ -1,5 +1,4 @@
-//! obsahuje modely
-//! pro přidávání nového modelu viz [dokumentace Diesel ORM](https://diesel.rs)
+//! contains models
 
 use rocket::request::{FromRequest, Request, Outcome};
 use rocket::http::Status;

@@ -13,7 +13,7 @@ use crate::models::{NewReservation, UpdateReservation, Reservation};
 ** TODO proper type for response, handle RGI responses
 */
 
-/// vrací všechny rezervace
+/// returns all reservations
 ///
 /// GET /events "application/json"
 #[get("/events", format = "application/json")]
@@ -21,12 +21,12 @@ pub fn list(db: Database<Reservations>) -> Json<Vec<(u64, Reservation)>> {
 	Json(db.read().iter().collect::<Vec<(u64, Reservation)>>())
 }
 
-/// vrátí JSON dané rezervace
+/// returns JSON of particular reservation
 ///
 /// GET /events/<id> application/json
 ///
-/// parametry:
-/// - `id`: identifikátor dané rezervace
+/// parameters:
+/// - `id`: identification number of the reservation
 #[get("/events/<id>")]
 pub fn get(id: u64, db: Database<Reservations>, _u: AuthToken<Noob>) -> Option<Json<Reservation>> {
 	db.read()
@@ -34,7 +34,7 @@ pub fn get(id: u64, db: Database<Reservations>, _u: AuthToken<Noob>) -> Option<J
 		.map(Json)
 }
 
-/// vrátí JSON dané rezervace
+/// returns JSON of particular reservation
 ///
 /// POST /events application/json
 ///
@@ -59,12 +59,12 @@ pub fn post(input: Json<NewReservation>, mut db: Database<Reservations>, usr: Au
 	db.write().insert(Database::<Reservations>::get_key().unwrap(), new_res).ok()?.map(|_| ())
 }
 
-/// upraví danou rezervaci
+/// edits a particular reservation
 ///
 /// PATCH /events/<id> application/json
 ///
-/// parametry:
-/// - `id`: identifikátor dané rezervace
+/// parameters:
+/// - `id`: identification number of the reservation
 ///
 /// data:[`UpdateReservation`]
 #[patch("/events/<id>", data = "<input>")]
@@ -112,11 +112,11 @@ pub fn patch(
 	Some(())
 }
 
-/// vymaže danou rezervaci
+/// deletes the reservation
 ///
 /// DELETE /events/<id>/
-/// parametry:
-/// - `id`: identifikátor dané rezervace
+/// parameters:
+/// - `id`: identification number of the reservation
 #[delete("/events/<id>")]
 pub fn delete(id: u64, mut db: Database<Reservations>, usr: AuthToken<Noob>) -> Option<()> {
 	use crate::auth::roles::Role;
@@ -133,14 +133,14 @@ pub fn delete(id: u64, mut db: Database<Reservations>, usr: AuthToken<Noob>) -> 
 	Some(())
 }
 
-/// filtruje podle data
+/// filters by data
 ///
 /// GET /events/filter/<rooms>/<begin_time>/end_time>
 ///
-/// parametry:
-/// - `rooms`:  bitflagy pro místnosti, viz [`Reservation`]
-/// - `begin_time`: počáteční čas
-/// - `end_time`: čas konce
+/// parameters:
+/// - `rooms`: room bitflags
+/// - `begin_time`: begin time :D
+/// - `end_time`: end time :D
 #[get("/events/filter/<rooms>/<begin_time>/<end_time>")]
 pub fn date_filter(
 	rooms: u8,
@@ -162,12 +162,12 @@ pub fn date_filter(
 	))
 }
 
-/// schválí endpoint
+/// approves the endpoint
 ///
 /// POST /events/<id>/approve
 ///
-/// parametry:
-/// - `id`: id rezervace
+/// parameters:
+/// - `id`: identification number of the reservation
 #[post("/events/<id>/approve")]
 pub fn approve(id: u64, mut db: Database<Reservations>, _u: AuthToken<Approver>) -> Option<()> {
 	let event = db.read().get(id)?;
@@ -191,7 +191,7 @@ pub fn approve(id: u64, mut db: Database<Reservations>, _u: AuthToken<Approver>)
 	Some(())
 }
 
-/// vrací seznam endpointů pro nabindování do Rocketu
+/// returns a list of endpoints for rocket binding
 pub fn routes() -> Vec<Route> {
 	routes![date_filter, list, approve, get, post, patch, delete,]
 }
