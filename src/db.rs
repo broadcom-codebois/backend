@@ -30,7 +30,8 @@ where
 	for<'a> K: Serialize + Deserialize<'a>,
 	for<'b> V: Serialize + Deserialize<'b>,
 {
-	tree: Tree,
+ 	/// tree
+	pub tree: Tree,
 	_k:   PhantomData<K>,
 	_v:   PhantomData<V>,
 }
