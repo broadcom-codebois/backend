@@ -20,6 +20,7 @@ serde_cbor = "0.10.2"
 ferris_print = "0.1"
 scanln = "0.1"
 yansi = "0.5"
+tungstenite = "0.9.2"
 
 [dependencies.chrono]
 version = "0.4.10"
