@@ -1,7 +1,7 @@
 //! ## backend rezervačního systému pro auditorium
 //! Dokumentace backendu.
 //! Jako webový framework projekt používá [Rocket](https://rocket.rs), na
-//! komunikaci s databází [Diesel](https://diesel.rs).
+//! komunikaci s databází [sled](https://sled.rs).
 //!
 //! Modus operandi tohoto serveru spočívá v přijímání požadavků, validaci dat
 //! a volání správného RGI, viz [`rgi!`]
