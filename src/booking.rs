@@ -9,6 +9,8 @@ use crate::db::{Database, table::Reservations};
 
 use crate::models::{NewReservation, UpdateReservation, Reservation};
 
+use crate::response::Response;
+
 /*
 ** TODO proper type for response, handle RGI responses
 */
@@ -17,8 +19,8 @@ use crate::models::{NewReservation, UpdateReservation, Reservation};
 ///
 /// GET /events "application/json"
 #[get("/events", format = "application/json")]
-pub fn list(db: Database<Reservations>) -> Json<Vec<(u64, Reservation)>> {
-	Json(db.read().iter().collect::<Vec<(u64, Reservation)>>())
+pub fn list(db: Database<Reservations>) -> Response {
+	Response::Ok(Json(db.read().iter().collect::<Vec<(u64, Reservation)>>()))
 }
 
 /// returns JSON of particular reservation
