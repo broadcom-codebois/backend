@@ -15,19 +15,19 @@ pub enum Response {
 	#[response(status = 200, content_type = "json")]
 	Ok(Json<Vec<(u64, Reservation)>>),
 	/// Bad Request - 400
-	#[response(status = 400)]
+	#[response(status = 400, content_type = "json")]
 	BadRequest(Option<S>),
 	/// Internal Server Error - 500
-	#[response(status = 500)]
+	#[response(status = 500, content_type = "json"))]
 	InternalServerError(Option<S>),
 	/// Forbidden - 403
-	#[response(status = 403)]
+	#[response(status = 403, content_type = "json"))]
 	Forbidden(Option<S>),
 	/// No Content - 204
-	#[response(status = 204)]
+	#[response(status = 204, content_type = "json"))]
 	NoContent(Option<S>),
 	/// Not Found - 404
-	#[response(status = 404)]
+	#[response(status = 404, content_type = "json"))]
 	NotFound(Option<S>),
 }
 
