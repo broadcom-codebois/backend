@@ -32,7 +32,7 @@ fn main() {
 	println!("[{}] {}", Paint::magenta("rust booking"), Paint::yellow("generating superadmin"));
 	let req = client.post(format!("/admin/generate_sa/{}/{}", admin_email, password)).dispatch();
 
-	if req.status() != Status::NotFound {
+	if req.status() == Status::NotFound {
 		 println!("[{}] {}", Paint::magenta("rust booking"), Paint::yellow("failed to generate superadmin account"))
 	} else {
 		 println!("[{}] {}", Paint::magenta("rust booking"), Paint::yellow("successfully generated superadmin account"))
