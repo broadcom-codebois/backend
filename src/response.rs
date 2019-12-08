@@ -1,6 +1,8 @@
 
-use rocket::response;
+use rocket::response::Responder;
 
 // dodelam
 
-pub enum Response {}
+pub enum Response {
+	
+}
