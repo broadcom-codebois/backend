@@ -1,11 +1,15 @@
 //! includes model describing the server responses
 
+use std::convert::From;
+
 use rocket::response::Responder;
 use rocket_contrib::json::Json;
 
 use crate::models::Reservation;
 
 type S = String;
+type OK = Json<Vec<(u64, Reservation)>>;
+type ERR = (u16, Option<S>);
 
 /// describes possible responses
 #[derive(Responder)]
@@ -31,15 +35,8 @@ pub enum Response {
 	InternalServerError(Option<S>),
 }
 
-impl Response {
-	fn from_option(x: Option<Json<Vec<(u64, Reservation)>>>) -> Self {
-		match x {
-			Some(s) => Self::Ok(s),
-			None => Self::NotFound(None)
-		}
-	}
-
-	fn from_result(x: Result<Json<Vec<(u64, Reservation)>>, (u16, Option<S>)>) -> Self {
+impl From<Result<OK, ERR>> for Response {
+	fn from(x: Result<OK, ERR>) -> Self {
 		match x {
 			Ok(s) => Self::Ok(s),
 			Err((id, content)) => match id {
@@ -49,6 +46,15 @@ impl Response {
 				500 => {Self::InternalServerError(content)},
 				_ => panic!("Error parsing http status code : {}", id)
 			}
+		}
+	}
+}
+
+impl From<Option<OK>> for Response {
+	fn from(x: Option<OK>) -> Self {
+		match x {
+			Some(s) => Self::Ok(s),
+			None => Self::NotFound(None)
 		}
 	}
 }
