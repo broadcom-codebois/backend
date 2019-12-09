@@ -52,15 +52,26 @@ extern crate rocket_contrib;
 #[macro_use]
 extern crate lazy_static;
 
+extern crate tungstenite;
 extern crate serde_cbor;
 extern crate dotenv;
 extern crate chrono;
 extern crate serde;
 extern crate sled;
 
+use std::thread;
+use std::sync::RwLock;
+use std::net::{TcpListener, TcpStream};
+
 use dotenv::dotenv;
 use rocket::http::Method;
 use rocket_cors::{AllowedHeaders, AllowedOrigins};
+
+use tungstenite::{
+		server::accept,
+		WebSocket,
+		Message,
+};
 
 pub mod static_server;
 pub mod booking;
@@ -69,10 +80,52 @@ pub mod auth;
 
 pub mod db;
 pub mod models;
+
+lazy_static! {
+	/// clients
+	pub static ref CLIENTS: RwLock<Vec<WebSocket<TcpStream>>> = RwLock::new(vec![]);
+}
+
 /// Vrací instanci Rocketu
 pub fn init() -> rocket::Rocket {
 	dotenv().ok();
 	let allowed_origins = AllowedOrigins::all();
+
+
+	thread::spawn(|| {
+		let server = TcpListener::bind("0.0.0.0:6969").unwrap();
+		
+		let responder = thread::spawn(|| {
+		 	println!("responder thread");
+ 			let d = db::Database::<db::table::Reservations>::open().unwrap();
+ 			let users = d.read();
+ 			
+ 			for _ in users.tree.watch_prefix(vec![]) {
+ 			 	println!("prefix update");
+				let mut c = CLIENTS.write().unwrap();
+
+ 				let mut to_kill = vec![];
+ 
+				for (i, l) in c.iter_mut().enumerate() {
+					if l.write_message(Message::text("update!")).is_err() {
+						to_kill.push(i);
+					}
+				}				
+		
+				to_kill.iter().for_each(|x| { c.remove(*x); });
+				to_kill.clear();
+ 			}
+		});	
+
+	 	println!("ws start");
+		for stream in server.incoming() {
+		 	println!("websocket");
+			let websocket = accept(stream.unwrap()).unwrap();
+			CLIENTS.write().unwrap().push(websocket);
+		}
+		
+		responder.join()
+	});
 
 	// You can also deserialize this
 	let cors = rocket_cors::CorsOptions {
