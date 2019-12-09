@@ -33,7 +33,6 @@
 //! ```
 #![feature(proc_macro_hygiene, decl_macro)]
 #![feature(associated_type_defaults)]
-#![feature(option_flattening)]
 #![allow(clippy::match_bool, clippy::option_map_unit_fn)]
 #![deny(missing_docs)]
 

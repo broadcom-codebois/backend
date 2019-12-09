@@ -8,8 +8,10 @@ use rocket_contrib::json::Json;
 use crate::models::Reservation;
 
 type S = String;
-type OK = Json<Vec<(u64, Reservation)>>;
-type ERR = (u16, Option<S>);
+/// Ok type as in Result
+pub type OK = Json<Vec<(u64, Reservation)>>;
+/// Err type as in Result
+pub type ERR = (u16, Option<S>);
 
 /// describes possible responses
 #[derive(Responder)]
