@@ -15,7 +15,7 @@ use crate::db::{
 
 use crate::models::{User, Reservation};
 
-/// geenrates a superadmin
+/// generates a superadmin
 #[post("/generate_sa/<email>/<password>")]
 pub fn generate_superadmin(email: String, password: String, mut db: Database<Users>) -> Option<()> {
 	if password != env::var("SA_SECRET").unwrap() { return None }
@@ -49,7 +49,7 @@ pub fn change_role(email: String, new_role: String, mut db: Database<Users>, _u:
 }
 
 
-/// vrací seznam endpointů pro nabindování do Rocketu
+/// returns a list of endpoints for rocket binding
 pub fn routes() -> Vec<Route> {
 	routes![users, generate_superadmin, change_role]
 }

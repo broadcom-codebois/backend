@@ -1,11 +1,11 @@
-//! modul s autentifikačními funkcemi
+//! module with authentification functions
 //!
-//! ## přidání autorizace k endpointu
-//! stačí přidat AuthToken parametr s typem
+//! ## adding authorization to endpoint
+//! it's sufficient to add a AuthToken parameter with the corresponding type
 //! ```no_run
 //! #[get("/supersecretstuff")]
 //! pub fn example(_u: AuthToken<roles::FacilityManager>) {
-//!
+//!	...
 //! }
 //!```
 
@@ -25,12 +25,12 @@ use crate::db::{
 };
 use crate::models::User;
 
-/// autorizační token, tak jak je přijat
+/// authorization token, the way it's recieved
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct AuthTokenRaw {
-	/// jméno uživatele
+	/// user name
 	pub name: String,
-	/// email uživatele
+	/// user email
 	pub email: String,
 }
 
@@ -47,12 +47,12 @@ impl AuthTokenRaw {
 	}
 }
 
-/// autorizační token po vyřešení údajů s databází
+/// authorization token after resolving the details with the database
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct AuthToken<T: roles::Role> {
-	/// nalezený uživatel
+	/// the found user
 	pub user: User,
-	/// marker pro rezoluci role
+	/// marker for role resolution
 	pub _m: PhantomData<T>,
 }
 
@@ -63,11 +63,11 @@ impl<T: roles::Role> AuthToken<T> {
 	}
 }
 
-/// obsahuje nulové typy pro role
-/// tento design umožňužje zneužít funkce Rustu pro deklarativní
-/// ověření -> pouze stačí do routy přidat parametr s typem `AuthToken<Approved>`.
+/// contains zero-sized types that describe roles
+/// this design allows abusing Rust's functionality for declarative
+/// verification - it's sufficient to add AuthToken<Approved> to route parameters
 ///
-/// současné role a jejich stringy (stringy jsou case-insensitive):
+/// the roles and their strings (case-insensitive) :
 /// -  [`roles::Noob`] -> `noob`
 /// -  [`roles::Approver`] -> `approver`
 /// -  [`roles::FacilityManager`] -> `facilitymanager`
@@ -86,7 +86,7 @@ pub mod roles {
 		/// whether the role is root role
 		fn is_root() -> bool { false }
 
-		/// jméno rodiče jako string
+		/// the parent's name as string
 		fn resolve_daddy() -> Vec<&'static str> {
 			if Self::is_root() {
 				vec![]
@@ -184,7 +184,7 @@ impl<'a, 'r, T: roles::Role> FromRequest<'a, 'r> for AuthToken<T> {
 	}
 }
 
-/// vrací informace o uživatelu
+/// returns user information
 #[get("/me")]
 pub fn me(_u: AuthToken<self::roles::Noob>) -> Json<User> {
 	Json(_u.user)

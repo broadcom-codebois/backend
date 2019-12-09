@@ -1,43 +1,35 @@
-//! ## backend rezervačního systému pro auditorium
-//! Dokumentace backendu.
-//! Jako webový framework projekt používá [Rocket](https://rocket.rs), na
-//! komunikaci s databází [Diesel](https://diesel.rs).
+//! ## backend of the reservation system for auditorium
+//! Backend documentation
+//! 
+//! Uses [Rocket](https://rocket.rs) as the web framework
+//! and [sled](https://sled.rs) as the database.
 //!
 //! Modus operandi tohoto serveru spočívá v přijímání požadavků, validaci dat
 //! a volání správného RGI, viz [`rgi!`]
 //!
-//! Struktura:
+//! Structure:
 //! ```bash,no_run
 //! .
-//! ├── build.rs    - build skript
-//! ├── Cargo.lock  - lockfile, nemazat! (deterministické buildy)
-//! ├── Cargo.toml  - manifest balíčku
-//! ├── diesel.toml - konfigurace Diesel.rs
+//! ├── Cargo.lock  - lockfile, do not delete! (deterministic builds)
+//! ├── Cargo.toml  - manifest of the package
 //! ├── Dockerfile  - dockerfile
-//! ├── frontend    - submodul s frontendem
+//! ├── frontend    - submodule with the frontend
 //! ├── Makefile    - make
-//! ├── migrations  - migrace
-//! │   ├── 00000000000000_diesel_initial_setup
-//! │   │   ├── down.sql
-//! │   │   └── up.sql
-//! │   └── 2019-11-25-143159_reservations - migrace relace reservations
-//! │       ├── down.sql
-//! │       └── up.sql
 //! ├── README.md   - README
-//! ├── rgi         - obsahuje RGI, viz modul rgi
-//! │   ├── booking - booking rgi
-//! │   │   ├── booking.py
-//! │   │   ├── curltest
-//! │   │   └── mod.rs
-//! │   └── mod.rs
-//! ├── Rocket.toml  - konfigurační soubor Rocketu
-//! ├── rustfmt.toml - pravidla pro automatické formátování kódu
-//! └── src          - zdrojové soubory
-//!     ├── db.rs            - databázové modely, utility
-//!     ├── main.rs          - entrypoint programu
-//!     ├── rgi -> ../rgi/   - symlink
-//!     ├── schema.rs        - schéma databáze (vygenerováno Dieselem, neupravovat!)
-//!     └── static_server.rs - statický server
+//! ├── Rocket.toml - Rocket configuration
+//! ├── rustfmt.toml- for automatic code formatting
+//! └── src         - source files
+//!		├── admin.rs	- admin functions
+//!		├── auth.rs		- authentification functions
+//!		├── bin			- additional binaries
+//!		│   └── superadmin_generator.rs		- cli app for generating superadmins
+//!		├── booking.rs	- booking endpoints
+//!		├── db.rs		- database access functions
+//!		├── lib.rs		- root; collects external crates and modules
+//!		├── main.rs		- inicializes Rocket
+//!		├── models.rs	- models as structures
+//!		├── response.rs	- responses
+//!		└── static_server.rs	- static file serving
 //! ```
 #![feature(proc_macro_hygiene, decl_macro)]
 #![feature(associated_type_defaults)]
@@ -80,6 +72,7 @@ pub mod auth;
 
 pub mod db;
 pub mod models;
+pub mod response;
 
 lazy_static! {
 	/// clients

@@ -5,62 +5,62 @@ use chrono::{DateTime, offset::Utc};
 
 use std::convert::From;
 
-/// Model rezervace, tak jak je uložena v databázi
+/// reservation model, as is saved in the database
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Reservation {
-	/// název události
+	/// event name
 	pub name: String,
-	/// popis události
+	/// event description
 	pub description: String,
-	/// "rezervujitel" události :^)
+	/// reservation author
 	pub author: String,
-	/// místnosti, které si "rezervujitel" přeje zarezervovat
+	/// rooms that the author wills to reserve
 	///
-	/// funguje na bázi bitflagů:
+	/// bitflag based:
 	/// ```
-	/// 0b00 -> žádná místnosti (nemělo by se stát :D)
+	/// 0b00 -> no room - nothing happens
 	/// 0b01 -> north
 	/// 0b10 -> south
-	/// 0b11 -> celé auditorium
+	/// 0b11 -> the whole auditorium
 	/// ```
 	pub rooms: u8,
-	/// počáteční čas rezervace
+	/// begin time of the reservation
 	pub begin_time: DateTime<Utc>,
-	/// čas, kdy rezervace končí
+	/// end time of the reservation
 	pub end_time: DateTime<Utc>,
-	/// rozložení nábytku v audioriu
+	/// furniture layout
 	pub layout: u8,
-	/// zda byla rezervace schválena
+	/// is the reservation approved?
 	pub approved: bool,
-	/// počet lidí
+	/// amount of people
 	pub people: u16,
 }
 
-/// Model rezervace pro přidání do databáze
+/// reservation model for adding to the database
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[allow(dead_code)]
 pub struct NewReservation {
-	/// název události
+	/// event name
 	pub name: String,
-	/// popis události
+	/// event description
 	pub description: String,
-	/// místnosti, které si "rezervujitel" přeje zarezervovat
+	/// rooms that the author wills to reserve
 	///
-	/// funguje na bázi bitflagů:
+	/// bitflag based:
 	/// ```
-	/// 0b00 -> žádná místnosti (nemělo by se stát :D)
+	/// 0b00 -> no room - nothing happens
 	/// 0b01 -> north
 	/// 0b10 -> south
-	/// 0b11 -> celé auditorium
+	/// 0b11 -> the whole auditorium
 	/// ```
 	pub rooms: u8,
-	/// počáteční čas rezervace
+	/// begin time
 	pub begin_time: DateTime<Utc>,
-	/// čas, kdy rezervace končí
+	/// end time
 	pub end_time: DateTime<Utc>,
-	/// rozložení nábytku v audioriu
+	/// furniture layout
 	pub layout: u8,
-	/// počet lidí
+	/// amount of people
 	pub people: u16,
 }
 
@@ -84,38 +84,38 @@ impl From<NewReservation> for Reservation {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[allow(dead_code)]
 pub struct UpdateReservation {
-	/// název události
+	/// event name
 	pub name: Option<String>,
-	/// popis události
+	/// event description
 	pub description: Option<String>,
-	/// místnosti, které si "rezervujitel" přeje zarezervovat
+	/// rooms that the author wills to reserve
 	///
-	/// funguje na bázi bitflagů:
+	/// bitflag based:
 	/// ```
-	/// 0b00 -> žádná místnosti (nemělo by se stát :D)
+	/// 0b00 -> no room - nothing happens
 	/// 0b01 -> north
 	/// 0b10 -> south
-	/// 0b11 -> celé auditorium
+	/// 0b11 -> the whole auditorium
 	/// ```
 	pub rooms: Option<u8>,
-	/// počáteční čas rezervace
+	/// begin time
 	pub begin_time: Option<DateTime<Utc>>,
-	/// čas, kdy rezervace končí
+	/// end time
 	pub end_time: Option<DateTime<Utc>>,
-	/// rozložení nábytku v audioriu
+	/// furniture layout
 	pub layout: Option<u8>,
-	/// počet lidí
+	/// amount of people
 	pub people: Option<u16>,
 }
 
-/// Model usera
+/// user model
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[allow(dead_code)]
 pub struct User {
-	/// jméno uživatele
+	/// user name
 	pub name: String,
-	/// email
+	/// user email
 	pub email: String,
-	/// role
+	/// user role
 	pub role: String,
 }
